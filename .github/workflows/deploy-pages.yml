@@ -1,27 +1,29 @@
-﻿name: Deploy to Cloudflare Pages
+﻿name: Build and Deploy
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      deployments: write
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
       
+      - name: Verify public directory
+        run: |
+          echo "✓ Checking public directory..."
+          ls -la public/
+          echo "✓ public directory verified"
+      
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: 7aea544aa504808e0ae2e25290d7818a
-          command: pages deploy public
-          secrets: |
-            CLOUDFLARE_API_TOKEN
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          projectName: test-repo
+          directory: public
+          productionBranch: main
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
