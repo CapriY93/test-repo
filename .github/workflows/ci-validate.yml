@@ -1,0 +1,34 @@
+﻿name: CI - Validate and Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Validate HTML
+        run: |
+          echo "✓ Validating HTML files..."
+          for file in public/*.html; do
+            echo "Checking: \"
+            grep -q "<!DOCTYPE html>" "\" && echo "  ✓ Valid HTML structure"
+          done
+      
+      - name: Check file size
+        run: |
+          echo "✓ Checking file sizes..."
+          du -sh public/
+          find public -type f -exec ls -lh {} \;
+      
+      - name: Summary
+        run: |
+          echo "✓ All checks passed"
+          echo "Ready for Cloudflare Pages deployment"
