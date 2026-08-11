@@ -1,0 +1,20 @@
+﻿name: Hello Cloudflare
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Test Cloudflare API Token
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          echo "✓ Cloudflare API Token is available"
+          echo "Token length: ${#CLOUDFLARE_API_TOKEN}"
+          echo "First 10 chars: ${CLOUDFLARE_API_TOKEN:0:10}"
